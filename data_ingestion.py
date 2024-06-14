@@ -7,21 +7,19 @@ from langchain_community.document_loaders import PyPDFLoader
 from langchain_experimental.text_splitter import SemanticChunker
 from langchain_community.embeddings.fastembed import FastEmbedEmbeddings
 
-loader = PyPDFLoader("UnderstandingDeepLearning_05_27_24_C.pdf")
+loader = PyPDFLoader("data/UnderstandingDeepLearning_05_27_24_C.pdf")
 document = loader.load()
 
-data= ""
-for doc in document:
-    data = data + " " + doc.page_content
-
-embeddings = FastEmbedEmbeddings(model_name="BAAI/bge-small-en-v1.5")
+data = " ".join(doc.page_content for doc in document)
+# print(data)
+embeddings = FastEmbedEmbeddings(model_name="BAAI/bge-base-en-v1.5")
 text_splitter = SemanticChunker(embeddings)
 
-docs = text_splitter.create_documents([data])
+docs = text_splitter.create_documents([data[:int(0.4*len(data))]])
 
 qdrant = Qdrant.from_documents(
     docs, 
-    embed_model,
+    embeddings,
     path = "./db",
     collection_name = "udl"
 )
@@ -30,7 +28,7 @@ retriever = qdrant.as_retriever()
 
 #ReRanker
 
-compressor = FlashrankRerank(model="ms-macro-MiniLM-L-12-v2")
+compressor = FlashrankRerank()
 compression_retriever = ContextualCompressionRetriever(base_compressor = compressor, base_retriever=retriever)
 
 query = "can you explain the transformer architecture?"
