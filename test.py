@@ -60,3 +60,8 @@ qa = RetrievalQA.from_chain_type(
 )
 
 response = qa.invoke("What is the most significant innovation from Meta?")
+
+
+
+
+

@@ -13,28 +13,19 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 from langchain.retrievers import ContextualCompressionRetriever
 from langchain.retrievers.document_compressors import FlashrankRerank
+from dotenv import load_dotenv
 
-os.environ["GROQ_API_KEY"] = userdata.get("GROQ_API_KEY")
-
+os.environ["GROQ_API_KEY"] = os.getenv("GROQ_API_KEY")
 llm = ChatGroq(temperature=0, model_name="llama3-70b-8192")
 
-### Construct retriever ###
-loader = WebBaseLoader(
-    web_paths=("https://lilianweng.github.io/posts/2023-06-23-agent/",),
-    bs_kwargs=dict(
-        parse_only=bs4.SoupStrainer(
-            class_=("post-content", "post-title", "post-header")
-        )
-    ),
-)
-docs = loader.load()
-
-text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
-splits = text_splitter.split_documents(docs)
-
 embeddings = FastEmbedEmbeddings(model_name="BAAI/bge-base-en-v1.5")
-vectorstore = Chroma.from_documents(documents=splits, embedding=embeddings)
-retriever = vectorstore.as_retriever()
+
+qdrant = Qdrant.from_existing_collection(
+    embeddings=embeddings,
+    collection_name="udl",
+    url="./db",
+)
+retriever = qdrant.as_retriever()
 
 compressor = FlashrankRerank(model="ms-marco-MiniLM-L-12-v2")
 compression_retriever = ContextualCompressionRetriever(
