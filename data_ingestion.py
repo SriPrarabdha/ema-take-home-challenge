@@ -12,10 +12,10 @@ document = loader.load()
 
 data = " ".join(doc.page_content for doc in document)
 # print(data)
-embeddings = FastEmbedEmbeddings(model_name="BAAI/bge-base-en-v1.5")
+embeddings = FastEmbedEmbeddings(model_name="BAAI/bge-small-en-v1.5")
 text_splitter = SemanticChunker(embeddings)
 
-docs = text_splitter.create_documents([data[:int(0.05*len(data))]])
+docs = text_splitter.create_documents([data])
 
 qdrant = Qdrant.from_documents(
     docs, 

@@ -15,11 +15,12 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain.retrievers import ContextualCompressionRetriever
 from langchain.retrievers.document_compressors import FlashrankRerank
 from dotenv import load_dotenv
+load_dotenv()
 
-os.environ["GROQ_API_KEY"] = "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"
+os.environ["GROQ_API_KEY"] = os.getenv("GROQ_API_KEY")
 llm = ChatGroq(temperature=0, model_name="llama3-70b-8192")
 
-embeddings = FastEmbedEmbeddings(model_name="BAAI/bge-base-en-v1.5")
+embeddings = FastEmbedEmbeddings(model_name="BAAI/bge-small-en-v1.5")
 
 qdrant = Qdrant.from_existing_collection(
     embedding=embeddings,

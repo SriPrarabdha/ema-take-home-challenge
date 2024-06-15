@@ -11,6 +11,26 @@
 ✅ Conversational Memory      ✅ Opensource LLM          ✅ Opensource DB         
 </pre>
 
+## Quickstart
+
+- Start with cloning this repo
+```
+git clone https://github.com/SriPrarabdha/ema-take-home-challenge.git
+```
+
+- add your data files onto ```data/``` folder
+
+- Create your own .env file and add the Groq api key
+```
+GROQ_API_KEY = "<API-KEY>"
+```
+
+- run ```python data_ingestion.py``` to ingest and store the data locally
+
+- run ```python main.py``` to chat with your notes
+
+- OR use the deployed api - 
+
 ## 1. User Documents
 
 The workflow commences with the user's documents, which form the foundational knowledge base for the chatbot system. These documents can encompass a wide range of formats, such as PDFs, Word files, or plain text files. To accommodate this diversity of document formats, a robust and versatile document loading mechanism is essential.
